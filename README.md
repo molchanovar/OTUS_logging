@@ -79,9 +79,24 @@ vim /etc/audit/auditd.conf
 log_format = NOLOG
 ...
 ```
-Рестартуем сервис auditd `service auditd restart`.
 
+Рестартуем сервис auditd 
+```
+service auditd restart
+```
+4. Отправка критичных логов на Log сервер + сохрание на локальной машине:
+Идем в конфиг файл rsyslog `/etc/rsyslog.conf` и добавляем правила:
+```
+...
+#### RULES ####
+...
+*.crit action(type="omfwd" target="10.0.1.5" port="514" protocol="tcp"
+              action.resumeRetryCount="100"
+              queue.type="linkedList" queue.size="10000")
+...
+```
 
+5. 
 
 
 ### Настраиваем Log:
