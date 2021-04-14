@@ -74,9 +74,10 @@ active = yes
 ...
 
 vim /etc/audit/auditd.conf
-
-# Запрещаем запись логов на локальной машине:
+...
+# Not record logs on local filesystem:
 log_format = NOLOG
+...
 ```
 Рестартуем сервис auditd `service auditd restart`.
 
