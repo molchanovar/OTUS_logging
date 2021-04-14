@@ -59,6 +59,29 @@ type=CWD msg=audit(1618429837.670:1185): cwd="/home/vagrant"
 type=SYSCALL msg=audit(1618429837.670:1185): arch=c000003e syscall=188 success=yes exit=0 a0=564e44c14430 a1=7f12a44d61ef a2=564e44e30fc0 a3=1c items=1 ppid=4113 pid=34318 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=6 comm="vim" exe="/usr/bin/vim" subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key="nginx_conf"
 ```
 
+3. Настраиваем отправку логов аудита на удаленный сервер: 
+Устанавливаем пакет `audispd-plugins` и идем в конфиги: 
+```
+[root@web vagrant]# vim /etc/audit/audisp-remote.conf
+...
+remote_server = 10.0.1.5
+port = 60
+...
+
+vim /etc/audit/plugins.d/au-remote.conf 
+...
+active = yes
+...
+
+vim /etc/audit/auditd.conf
+
+# Запрещаем запись логов на локальной машине:
+log_format = NOLOG
+```
+Рестартуем сервис auditd `service auditd restart`.
+
+
+
 
 ### Настраиваем Log:
 
