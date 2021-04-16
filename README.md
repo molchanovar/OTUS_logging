@@ -101,7 +101,29 @@ service auditd restart
 
 ### Настраиваем Log:
 
+1. Разрешаем прием логов в `/etc/rsyslog.conf`:
+```
+# Provides TCP syslog reception
+module(load="imtcp") # needs to be done just once
+input(type="imtcp" port="514")
 
+# Provides UDP syslog reception
+module(load="imudp") # needs to be done just once
+input(type="imudp" port="514")
+```
 
+2. Добавляем в конфиг разделение логов `nginx_access` и `nginx_error` по директориям: 
+```
+vim /etc/rsyslog.conf
 
+if ($hostname == 'web') and ($programname == 'nginx_access') then {
+    action(type="omfile" file="/var/log/rsyslog/web/nginx_access.log")
+    stop
+}
+
+if ($hostname == 'web') and ($programname == 'nginx_error') then {
+    action(type="omfile" file="/var/log/rsyslog/web/nginx_error.log")
+    stop
+}
+```
 
