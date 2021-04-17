@@ -27,8 +27,8 @@ tcp6       0      0 :::514                  :::*                    LISTEN      
 udp        0      0 0.0.0.0:514             0.0.0.0:*                           4392/rsyslogd       
 udp6       0      0 :::514                  :::*                                4392/rsyslogd       
 ```
-3. Логи Nginx уходят на сервер Log: 
 
+3. Логи Nginx уходят на сервер Log: 
 ```
 [root@log web]# ls
 nginx_access.log  nginx_error.log
@@ -39,8 +39,8 @@ Apr 17 13:29:23 web nginx_access: 10.0.2.2 - - [17/Apr/2021:13:29:23 +0000] "GET
 Apr 17 13:29:23 web nginx_access: 10.0.2.2 - - [17/Apr/2021:13:29:23 +0000] "GET /favicon.ico HTTP/1.1" 404 3971 "http://127.0.0.1:9000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0"
 Apr 17 13:29:23 web nginx_error: 2021/04/17 13:29:23 [error] 3172#0: *2 open() "/usr/share/nginx/html/favicon.ico" failed (2: No such file or directory), client: 10.0.2.2, server: _, request: "GET /favicon.ico HTTP/1.1", host: "127.0.0.1:9000", referrer: "http://127.0.0.1:9000/"
 ```
-4. Аудит следит за изменением конфига Nginx и шлет логи на Log сервер:
 
+4. Аудит следит за изменением конфига Nginx и шлет логи на Log сервер:
 ```
 [root@log log]# ausearch -k nginx_conf
 ----
