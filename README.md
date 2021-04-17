@@ -97,7 +97,18 @@ service auditd restart
 #  *.* @10.0.1.5:514           # использовал на этапе тестов, отправляет все логи 
 ```
 
-5. 
+5. Правим конфиг Nginx для отправки логов на Log сервер + оставляем crit логи на Web: 
+```
+vim /etc/nginx/nginx.conf
+
+...
+error_log /var/log/nginx/error.log crit;
+error_log syslog:server=10.0.1.5:514,tag=nginx_error;
+...
+access_log syslog:server=10.0.1.5:514,tag=nginx_access;
+
+```
+
 
 
 ### Настраиваем Log:
