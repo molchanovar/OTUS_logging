@@ -6,6 +6,59 @@ rsyslog+auditd
  - Настроен аудит следящий за изменением конфигов нжинкса. Все критичные логи с web собираются локально и удаленно. Все логи с nginx уходят на удаленный сервер (локально только критичные) логи аудита должны также уходить на удаленную систему
 
 
+### Проверка Д/З:
+1. Развернуть стенд `vagrant up`
+2. Открытые порты: 
+```
+Клиент
+[root@web audit]# netstat -tulnp
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name         
+tcp        0      0 0.0.0.0:8080            0.0.0.0:*               LISTEN      3171/nginx: master  
+tcp6       0      0 :::8080                 :::*                    LISTEN      3171/nginx: master  
+ 
+Сервер: 
+[root@log log]# netstat -tulnp
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 0.0.0.0:514             0.0.0.0:*               LISTEN      4392/rsyslogd               
+tcp6       0      0 :::60                   :::*                    LISTEN      4370/auditd         
+tcp6       0      0 :::514                  :::*                    LISTEN      4392/rsyslogd       
+udp        0      0 0.0.0.0:514             0.0.0.0:*                           4392/rsyslogd       
+udp6       0      0 :::514                  :::*                                4392/rsyslogd       
+```
+3. Логи Nginx уходят на серевер Log: 
+
+```
+[root@log web]# ls
+nginx_access.log  nginx_error.log
+[root@log web]# cat *
+Apr 17 13:29:22 web nginx_access: 10.0.2.2 - - [17/Apr/2021:13:29:22 +0000] "GET / HTTP/1.1" 200 4057 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0"
+Apr 17 13:29:23 web nginx_access: 10.0.2.2 - - [17/Apr/2021:13:29:23 +0000] "GET /nginx-logo.png HTTP/1.1" 200 368 "http://127.0.0.1:9000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0"
+Apr 17 13:29:23 web nginx_access: 10.0.2.2 - - [17/Apr/2021:13:29:23 +0000] "GET /poweredby.png HTTP/1.1" 200 4148 "http://127.0.0.1:9000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0"
+Apr 17 13:29:23 web nginx_access: 10.0.2.2 - - [17/Apr/2021:13:29:23 +0000] "GET /favicon.ico HTTP/1.1" 404 3971 "http://127.0.0.1:9000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0"
+Apr 17 13:29:23 web nginx_error: 2021/04/17 13:29:23 [error] 3172#0: *2 open() "/usr/share/nginx/html/favicon.ico" failed (2: No such file or directory), client: 10.0.2.2, server: _, request: "GET /favicon.ico HTTP/1.1", host: "127.0.0.1:9000", referrer: "http://127.0.0.1:9000/"
+```
+4. Аудит следит за изменением конфига Nginx и шлет логи на Log сервер:
+
+```
+[root@log log]# ausearch -k nginx_conf
+----
+time->Sat Apr 17 13:17:02 2021
+type=PROCTITLE msg=audit(1618665422.578:687): proctitle=2F7362696E2F617564697463746C002D52002F6574632F61756469742F61756469742E72756C6573
+type=SOCKADDR msg=audit(1618665422.578:687): saddr=100000000000000000000000
+type=SYSCALL msg=audit(1618665422.578:687): arch=c000003e syscall=44 success=yes exit=1088 a0=3 a1=7ffc62a656e0 a2=440 a3=0 items=0 ppid=3143 pid=3153 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm="auditctl" exe="/usr/sbin/auditctl" subj=system_u:system_r:unconfined_service_t:s0 key=(null)
+type=CONFIG_CHANGE msg=audit(1618665422.578:687): auid=4294967295 ses=4294967295 subj=system_u:system_r:unconfined_service_t:s0 op=remove_rule key="nginx_conf" list=4 res=1
+----
+time->Sat Apr 17 13:17:02 2021
+type=PROCTITLE msg=audit(1618665422.578:688): proctitle=2F7362696E2F617564697463746C002D52002F6574632F61756469742F61756469742E72756C6573
+type=SOCKADDR msg=audit(1618665422.578:688): saddr=100000000000000000000000
+type=SYSCALL msg=audit(1618665422.578:688): arch=c000003e syscall=44 success=yes exit=1088 a0=3 a1=7ffc62a656e0 a2=440 a3=0 items=0 ppid=3143 pid=3153 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm="auditctl" exe="/usr/sbin/auditctl" subj=system_u:system_r:unconfined_service_t:s0 key=(null)
+type=CONFIG_CHANGE msg=audit(1618665422.578:688): auid=4294967295 ses=4294967295 subj=system_u:system_r:unconfined_service_t:s0 op=remove_rule key="nginx_conf" list=4 res=1
+----
+
+```
+
 ### Выполнение:
 Подняты 2 виртуальные машины:
 ```
