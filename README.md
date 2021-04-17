@@ -27,7 +27,7 @@ tcp6       0      0 :::514                  :::*                    LISTEN      
 udp        0      0 0.0.0.0:514             0.0.0.0:*                           4392/rsyslogd       
 udp6       0      0 :::514                  :::*                                4392/rsyslogd       
 ```
-3. Логи Nginx уходят на серевер Log: 
+3. Логи Nginx уходят на сервер Log: 
 
 ```
 [root@log web]# ls
