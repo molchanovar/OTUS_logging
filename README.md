@@ -94,6 +94,7 @@ service auditd restart
               action.resumeRetryCount="100"
               queue.type="linkedList" queue.size="10000")
 ...
+#  *.* @10.0.1.5:514           # использовал на этапе тестов, отправляет все логи 
 ```
 
 5. 
