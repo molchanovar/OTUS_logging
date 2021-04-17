@@ -2,6 +2,7 @@
 
 yum -y install vim 
 yum -y install epel-release 
+yum -y install net-tools
 dnf -y install nginx
 yum -y install audispd-plugins
 
